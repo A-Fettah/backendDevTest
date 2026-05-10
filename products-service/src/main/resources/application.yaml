@@ -1,4 +1,26 @@
 spring:
   application:
     name: products-service
- 
+  cache:
+    type: caffeine
+    cache-names: 
+      - products
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=3600s 
+
+server:
+  port: 5000
+
+api:
+  external:
+    base-url: http://localhost:3001
+    timeout-ms: 3000 
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      productService:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
